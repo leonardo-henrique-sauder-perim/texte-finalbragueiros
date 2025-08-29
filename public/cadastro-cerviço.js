@@ -11,7 +11,7 @@ async function cadastrarCervico(event) {
     };
 
     try {
-        const response = await fetch('/servicos', {
+        const response = await fetch('/cervicos', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -35,7 +35,7 @@ async function cadastrarCervico(event) {
 async function listarCervicos() {
     const nome = document.getElementById('nome').value.trim();  // Pega o valor do nome digitado no input
 
-    let url = '/servicos';  // URL padrão para todos os serviços
+    let url = '/cervicos';  // URL padrão para todos os serviços
 
     if (nome) {
         // Se nome foi digitado, adiciona o parâmetro de consulta
@@ -66,7 +66,7 @@ async function listarCervicos() {
             });
         }
     } catch (error) {
-        console.error('Erro ao listar servicos:', error);
+        console.error('Erro ao listar cervicos:', error);
     }
 }
 // Função para atualizar as informações do cliente
@@ -84,7 +84,7 @@ async function atualizarCervico() {
     };
 
     try {
-        const response = await fetch(`/servicos/nome/${nome}`, {
+        const response = await fetch(`/cervicos/nome/${nome}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
