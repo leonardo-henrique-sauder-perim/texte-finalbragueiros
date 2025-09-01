@@ -1,14 +1,42 @@
+// Função para buscar o relatório com filtros
+function buscarRelatorio() {
+    const cpf = document.getElementById("cpf").value;
+    const produto = document.getElementById("produto").value;
+    const dataInicio = document.getElementById("dataInicio").value;
+    const dataFim = document.getElementById("dataFim").value;
 
-        // Simulação de funcionalidade para visualizar detalhes
-        document.querySelectorAll('.btn-icon').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.getElementById('tabela-historico').classList.add('hidden');
-                document.getElementById('detalhes-cliente').classList.remove('hidden');
+    // Construir a URL com os parâmetros de filtro
+    let url = `/relatorios?`;
+    if (cpf) url += `cpf=${cpf}&`;
+    if (produto) url += `produto=${produto}&`;
+    if (dataInicio) url += `dataInicio=${dataInicio}&`;
+    if (dataFim) url += `dataFim=${dataFim}&`;
+
+    // Remover o último "&" se presente
+    url = url.slice(0, -1);
+
+    // Fazer a requisição para o servidor
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            // Limpar a tabela
+            const tabelaVendas = document.getElementById("tabela-vendas");
+            tabelaVendas.innerHTML = '';
+
+            // Preencher a tabela com os dados
+            data.forEach(venda => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${venda.id}</td>
+                    <td>${venda.cliente_nome}</td>
+                    <td>${venda.produto_nome}</td>
+                    <td>${venda.quantidade}</td>
+                    <td>${new Date(venda.data).toLocaleString()}</td>
+                `;
+                tabelaVendas.appendChild(tr);
             });
+        })
+        .catch(error => {
+            console.error('Erro ao buscar relatórios:', error);
         });
-        
-        document.getElementById('fechar-detalhes').addEventListener('click', function() {
-            document.getElementById('detalhes-cliente').classList.add('hidden');
-            document.getElementById('tabela-historico').classList.remove('hidden');
-        });
-    
+}

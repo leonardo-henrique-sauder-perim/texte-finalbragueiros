@@ -287,6 +287,59 @@ app.put('/cervicos/nome/:nome', (req, res) => {
         res.send('Serviço atualizado com sucesso.');
     });
 });
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+// Rota para buscar vendas com filtros (cpf, produto, data)
+app.get('/relatorios', (req, res) => {
+    const { cpf, produto, dataInicio, dataFim } = req.query;
+
+    let query = `SELECT
+                    vendas.id,
+                    vendas.cliente_cpf,
+                    vendas.produto_id,
+                    vendas.quantidade,
+                    vendas.data, 
+                    produtos.nome AS produto_nome,
+                    clientes.nome AS cliente_nome
+                 FROM vendas
+                 JOIN produtos ON vendas.produto_id = produtos.id
+                 JOIN clientes ON vendas.cliente_cpf = clientes.cpf
+                 WHERE 1=1`;  // Começar com um WHERE sempre verdadeiro (1=1)
+
+    const params = [];
+
+    // Filtro por CPF do cliente
+    if (cpf) {
+        query += ` AND vendas.cliente_cpf = ?`;
+        params.push(cpf);
+    }
+
+    // Filtro por nome do produto
+    if (produto) {
+        query += ` AND produtos.nome LIKE ?`;
+        params.push(`%${produto}%`);
+    }
+
+    // Filtro por data
+    if (dataInicio && dataFim) {
+        query += ` AND vendas.data BETWEEN ? AND ?`;
+        params.push(dataInicio, dataFim);
+    }
+
+    // Executa a query com os filtros aplicados
+    db.all(query, params, (err, rows) => {
+        if (err) {
+            return res.status(500).json({ message: 'Erro ao buscar relatórios.', error: err.message });
+        }
+
+        res.json(rows);  // Retorna os resultados da query
+    });
+});
+
   
 
 
