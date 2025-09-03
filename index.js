@@ -222,8 +222,10 @@ app.put('/servicos/nome/:nome', (req, res) => {
     });
 });
 
-/////////////////////////////////////////////////////////////////////////////////////
-// Cadastrar serviços
+///////////////////////////// Rotas para sla  /////////////////////////////
+///////////////////////////// Rotas para sla /////////////////////////////
+///////////////////////////// Rotas para Sla /////////////////////////////
+
 app.post('/servicos', (req, res) => {
     const { nome, preco, duracao, descricao } = req.body;
 
@@ -288,6 +290,77 @@ app.put('/servicos/nome/:nome', (req, res) => {
     });
 });
   
+
+///////////////////////////// Rotas para Relatorio /////////////////////////////
+///////////////////////////// Rotas para Relarorio /////////////////////////////
+///////////////////////////// Rotas para Relatorio /////////////////////////////
+
+
+
+// Rota para buscar vendas com filtros (cpf, produto, data)
+app.get('/relatorios', (req, res) => {
+    const { cpf, servico, dataInicio, dataFim } = req.query;
+
+    let query = `SELECT
+                    agendamento.id,
+                    agendamento.cliente_cpf,
+                    agendamento.produto_id,
+                    agendamento.quantidade,
+                    agendamento.data, 
+                    servicos.nome AS servicos_nome,
+                    clientes.nome AS cliente_nome
+                 FROM agendamento
+                 JOIN servicos ON vendas.servicos_id = servicos.id
+                 JOIN clientes ON vendas.cliente_cpf = clientes.cpf
+                 WHERE 1=1`;  // Começar com um WHERE sempre verdadeiro (1=1)
+
+    const params = [];
+
+    // Filtro por CPF do cliente
+    if (cpf) {
+        query += ` AND agendamento.cliente_cpf = ?`;
+        params.push(cpf);
+    }
+
+    // Filtro por nome do produto
+    if (servico) {
+        query += ` AND servicos.nome LIKE ?`;
+        params.push(`%${produto}%`);
+    }
+
+    // Filtro por data
+    if (dataInicio && dataFim) {
+        query += ` AND agendamentos.data BETWEEN ? AND ?`;
+        params.push(dataInicio, dataFim);
+    }
+
+    // Executa a query com os filtros aplicados
+    db.all(query, params, (err, rows) => {
+        if (err) {
+            return res.status(500).json({ message: 'Erro ao buscar relatórios.', error: err.message });
+        }
+
+        res.json(rows);  // Retorna os resultados da query
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

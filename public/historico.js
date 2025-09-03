@@ -1,14 +1,14 @@
 // Função para buscar o relatório com filtros
 function buscarRelatorio() {
     const cpf = document.getElementById("cpf").value;
-    const produto = document.getElementById("produto").value;
+    const servico = document.getElementById("servico").value;
     const dataInicio = document.getElementById("dataInicio").value;
     const dataFim = document.getElementById("dataFim").value;
 
     // Construir a URL com os parâmetros de filtro
     let url = `/relatorios?`;
     if (cpf) url += `cpf=${cpf}&`;
-    if (produto) url += `produto=${produto}&`;
+    if (servico) url += `servico=${servico}&`;
     if (dataInicio) url += `dataInicio=${dataInicio}&`;
     if (dataFim) url += `dataFim=${dataFim}&`;
 
@@ -20,20 +20,20 @@ function buscarRelatorio() {
         .then(response => response.json())
         .then(data => {
             // Limpar a tabela
-            const tabelaVendas = document.getElementById("tabela-vendas");
-            tabelaVendas.innerHTML = '';
+            const tabelaagendamento = document.getElementById("tabela-agendamento");
+            tabelaagendamento.innerHTML = '';
 
             // Preencher a tabela com os dados
-            data.forEach(venda => {
+            data.forEach(agendamento => {
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
-                    <td>${venda.id}</td>
-                    <td>${venda.cliente_nome}</td>
-                    <td>${venda.produto_nome}</td>
-                    <td>${venda.quantidade}</td>
-                    <td>${new Date(venda.data).toLocaleString()}</td>
+                    <td>${agendamento.id}</td>
+                    <td>${agendamento.cliente_nome}</td>
+                    <td>${agendamento.servico_nome}</td>
+                    <td>${agendamento.quantidade}</td>
+                    <td>${new Date(agendamento.data).toLocaleString()}</td>
                 `;
-                tabelaVendas.appendChild(tr);
+                tabelaagendamento.appendChild(tr);
             });
         })
         .catch(error => {
